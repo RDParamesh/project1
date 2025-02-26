@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: nodejs
-        image: <AWS_ECR_REPO_URL>:latest
+        image: 539247491218.dkr.ecr.ap-south-1.amazonaws.com/project1:latest
         ports:
         - containerPort: 3000
