@@ -3,7 +3,7 @@ name: Deploy to EKS
 on:
   push:
     branches:
-      - main  # Trigger deployment when code is pushed to the main branch
+      - main  # Trigger deployment on push to main branch
 
 permissions:
   id-token: write
@@ -24,9 +24,6 @@ jobs:
           role-session-name: GitHubActionsEKSDeploy
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Verify AWS Identity
-        run: aws sts get-caller-identity  # Debugging step to confirm role assumption
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -45,20 +42,15 @@ jobs:
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
-          kubectl version --client
 
       - name: Update kubeconfig
         run: |
-          aws eks update-kubeconfig --name paramesh-eks --region ${{ secrets.AWS_REGION }} --role-arn ${{ secrets.AWS_ROLE_ARN }}
-
-      - name: Verify Cluster Access
-        run: |
-          kubectl get nodes || (echo "Failed to get nodes. Check IAM permissions and aws-auth ConfigMap" && exit 1)
+          aws eks update-kubeconfig --name paramesh-eks --region ${{ secrets.AWS_REGION }}
 
       - name: Deploy to EKS
         run: |
-          kubectl apply -f k8s/deployment.yaml --validate=false
-          kubectl apply -f k8s/service.yaml --validate=false
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
 
       - name: Verify Deployment
         run: |
