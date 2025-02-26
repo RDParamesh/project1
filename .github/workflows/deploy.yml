@@ -48,6 +48,9 @@ jobs:
           aws eks update-kubeconfig --name paramesh-eks --region ${{ secrets.AWS_REGION }}
       - name: Debug AWS Credentials
         run: aws sts get-caller-identity
+      - name: Check Kubernetes Cluster Connection
+        run: kubectl cluster-info
+
 
 
       - name: Deploy to EKS
