@@ -24,7 +24,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
+        run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 539935451710.dkr.ecr.us-west-2.amazonaws.com/project1 
 
       - name: Build and tag Docker image
         env:
