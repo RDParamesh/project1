@@ -27,12 +27,14 @@ jobs:
         run: aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
 
       - name: Build and tag Docker image
+        env:
+          ECR_REGISTRY: 539935451710.dkr.ecr.us-west-2.amazonaws.com
+          ECR_REPOSITORY: project1
+          IMAGE_TAG: latest
         run: |
-          docker build -t my-app:latest .
-          docker tag my-app:latest ${{ secrets.ECR_REPO }}/my-app:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Push Docker image to ECR
-        run: docker push ${{ secrets.ECR_REPO }}/my-app:latest
 
       - name: Deploy to ECS
         run: |
